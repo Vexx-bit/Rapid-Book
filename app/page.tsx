@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { prisma } from "@/lib/prisma"
 import { BookingWizard } from "@/components/booking/BookingWizard"
 import { Navbar } from "@/components/layout/Navbar"
