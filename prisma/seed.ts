@@ -21,7 +21,7 @@ async function main() {
   }
 
   // 1. Create Services
-  const services = [
+  const servicesData = [
     {
       name: 'Strategy Consultation',
       durationMin: 45,
@@ -45,53 +45,61 @@ async function main() {
   ]
 
   const createdServices = []
-  for (const service of services) {
-    const s = await prisma.service.create({
-      data: service
+  for (const s of servicesData) {
+    const service = await prisma.service.create({
+      data: {
+        name: s.name,
+        durationMin: s.durationMin,
+        price: s.price
+      }
     })
-    createdServices.push(s)
+    createdServices.push(service)
   }
   console.log('✅ Created services')
 
   // 2. Create Mock Bookings
-  const bookings = [
+  const now = new Date()
+  
+  const bookingsData = [
     {
       customerName: 'Alice Johnson',
       customerEmail: 'alice@example.com',
-      serviceId: createdServices[0].id,
-      startTime: new Date(Date.now() + 86400000), // Tomorrow
-      status: 'CONFIRMED'
+      service: createdServices[0],
+      startTime: new Date(now.getTime() + 86400000), // Tomorrow
+      status: 'CONFIRMED' as const
     },
     {
       customerName: 'Bob Smith',
       customerEmail: 'bob@example.com',
-      serviceId: createdServices[1].id,
-      startTime: new Date(Date.now() + 172800000), // Day after tomorrow
-      status: 'PENDING'
+      service: createdServices[1],
+      startTime: new Date(now.getTime() + 172800000), // Day after tomorrow
+      status: 'PENDING' as const
     },
     {
       customerName: 'Charlie Brown',
       customerEmail: 'charlie@example.com',
-      serviceId: createdServices[2].id,
-      startTime: new Date(Date.now() - 86400000), // Yesterday
-      status: 'COMPLETED'
-    },
-    {
-      customerName: 'Diana Prince',
-      customerEmail: 'diana@example.com',
-      serviceId: createdServices[0].id,
-      startTime: new Date(Date.now() + 3600000), // In 1 hour
-      status: 'CONFIRMED'
+      service: createdServices[2],
+      startTime: new Date(now.getTime() - 86400000), // Yesterday
+      status: 'COMPLETED' as const
     }
   ]
 
-  for (const booking of bookings) {
+  for (const b of bookingsData) {
+    const endTime = new Date(b.startTime.getTime() + b.service.durationMin * 60000)
+    
     await prisma.booking.create({
-      data: booking
+      data: {
+        customerName: b.customerName,
+        customerEmail: b.customerEmail,
+        serviceId: b.service.id,
+        startTime: b.startTime,
+        endTime: endTime,
+        status: b.status
+      }
     })
   }
 
-  console.log('✅ Created mock bookings')
+  console.log('✅ Created mock bookings with correct end times')
   console.log('🎉 Database seeded successfully!')
 }
 
