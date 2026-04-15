@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent } from "@/components/ui/card"
 import { Service } from '@prisma/client'
 import { ServiceSelection } from './ServiceSelection'
 import { DateTimeSelection } from './DateTimeSelection'
@@ -9,7 +8,7 @@ import { CustomerForm } from './CustomerForm'
 import { toast } from 'sonner'
 import { createBooking } from "@/actions/create-booking"
 import { motion, AnimatePresence } from 'framer-motion'
-import { CheckCircle2, ArrowRight, Minus } from 'lucide-react'
+import { CheckCircle2, Minus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface BookingWizardProps {
@@ -46,11 +45,11 @@ export function BookingWizard({ services }: BookingWizardProps) {
         })
 
         if (result.success) {
-            toast.success("BOOKING_INITIALIZED")
+            toast.success("CONFIRMED")
             setIsSuccess(true)
         }
     } catch (error) {
-        toast.error("SYSTEM_FAILURE_RETRY")
+        toast.error("ERROR")
         console.error(error)
     }
   }
@@ -68,28 +67,28 @@ export function BookingWizard({ services }: BookingWizardProps) {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="p-12 text-center"
+            className="p-12 md:p-24 text-center space-y-16"
           >
-              <div className="flex justify-center mb-10">
-                  <CheckCircle2 className="h-16 w-16 text-white stroke-[1px]" />
+              <div className="flex justify-center">
+                  <CheckCircle2 className="h-20 w-20 text-white stroke-[1px]" />
               </div>
               
-              <div className="space-y-6">
-                  <h2 className="text-4xl font-light tracking-tighter text-white uppercase">
-                      Confirmed.
+              <div className="space-y-4">
+                  <h2 className="text-6xl font-black tracking-tighter text-white uppercase italic leading-none">
+                      CONFIRMED.
                   </h2>
-                  <p className="text-[#666666] text-sm tracking-widest uppercase font-bold">
-                    Transmission Sent // Node ID: {Math.random().toString(36).substring(7)}
+                  <p className="text-[#333333] text-xs tracking-[0.4em] uppercase font-bold">
+                    The coordination sequence has been finalized.
                   </p>
-                  
-                  <div className="pt-12">
-                      <Button 
-                          onClick={resetBooking} 
-                          className="bg-white text-black hover:bg-[#CCCCCC] rounded-none px-12 py-6 text-xs font-bold uppercase tracking-widest"
-                      >
-                          New Initialization
-                      </Button>
-                  </div>
+              </div>
+              
+              <div className="pt-12">
+                  <Button 
+                      onClick={resetBooking} 
+                      className="bg-white text-black hover:bg-[#CCCCCC] rounded-none px-16 py-8 text-xs font-bold uppercase tracking-[0.3em] active:scale-95 transition-all"
+                  >
+                      BACK TO REGISTRY
+                  </Button>
               </div>
           </motion.div>
       )
@@ -98,17 +97,17 @@ export function BookingWizard({ services }: BookingWizardProps) {
   return (
     <div className="w-full">
       {/* Precision Step Indicator */}
-      <div className="mb-20 px-4">
-        <div className="flex justify-between items-center max-w-sm mx-auto">
+      <div className="mb-32 px-4 border-b border-[#111111] pb-10">
+        <div className="flex justify-between items-center max-w-sm">
           {[1, 2, 3].map((s) => (
-            <div key={s} className="flex items-center gap-4">
+            <div key={s} className="flex items-center gap-6">
                <div className={`
-                 text-[10px] font-bold tracking-widest transition-all duration-500
-                 ${step === s ? 'text-white scale-125' : 'text-[#333333]'}
+                 text-xs font-bold tracking-[0.3em] transition-all duration-700
+                 ${step === s ? 'text-white translate-y-[-2px]' : 'text-[#222222]'}
                `}>
                  0{s}
                </div>
-               {s < 3 && <Minus className="w-8 h-[1px] bg-[#1A1A1A]" />}
+               {s < 3 && <Minus className="w-12 h-[1px] bg-[#111111]" />}
             </div>
           ))}
         </div>
@@ -117,24 +116,22 @@ export function BookingWizard({ services }: BookingWizardProps) {
       <AnimatePresence mode="wait">
         <motion.div
             key={step}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 10 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-            <div className="space-y-12">
-                <div className="space-y-2 border-l-2 border-white pl-8">
-                    <h3 className="text-3xl font-light tracking-tighter uppercase text-white">
-                        {step === 1 && "Configuration Selection"}
-                        {step === 2 && "Temporal Window"}
-                        {step === 3 && "Registry Entry"}
+            <div className="space-y-16 p-8 md:p-0">
+                <div className="space-y-4 relative">
+                    <h3 className="text-5xl font-black tracking-tighter uppercase text-white leading-none">
+                        {step === 1 && "Registry Selection"}
+                        {step === 2 && "Temporal Node"}
+                        {step === 3 && "Credential Entry"}
                     </h3>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#555555]">
-                       Phase {step} // Initializing {step === 1 ? 'Services' : step === 2 ? 'Schedule' : 'Authentication'}
-                    </p>
+                    <div className="h-[2px] w-20 bg-white shadow-[0_0_15px_rgba(255,255,255,0.5)]"></div>
                 </div>
                 
-                <div className="min-h-[400px]">
+                <div className="min-h-[450px]">
                     {step === 1 && (
                         <ServiceSelection services={services} onSelect={handleServiceSelect} />
                     )}
