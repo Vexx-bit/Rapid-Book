@@ -1,39 +1,44 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Minus, LayoutDashboard } from "lucide-react"
+'use client'
+
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { Calendar } from 'lucide-react'
 
 export function Navbar() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#111111] bg-[#0A0A0A]/80 backdrop-blur-3xl">
-        <div className="container mx-auto flex h-24 items-center justify-between px-8 md:px-12">
-            <Link href="/" className="font-bold text-2xl flex flex-col -space-y-1 group transition-all">
-                <span className="text-white tracking-tighter">RAPID<span className="font-light">BOOK</span></span>
-                <div className="flex items-center gap-2">
-                   <Minus className="w-4 h-[1px] bg-[#333333] group-hover:bg-white transition-colors" />
-                   <span className="text-[10px] text-[#444444] font-bold tracking-[0.3em] uppercase group-hover:text-white transition-colors">Protocol v1.0</span>
-                </div>
-            </Link>
+    <motion.header 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-[#111111]"
+    >
+      <div className="container mx-auto px-8 md:px-12 h-24 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-4 group">
+          <div className="w-10 h-10 bg-white flex items-center justify-center group-hover:rotate-90 transition-transform duration-700">
+             <Calendar className="w-5 h-5 text-black stroke-[2.5px]" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl font-black tracking-tighter uppercase leading-none text-white">RapidBook</span>
+            <span className="text-[8px] font-bold tracking-[0.6em] text-[#333333] uppercase leading-none mt-1">Universal Protocol</span>
+          </div>
+        </Link>
 
-            <nav className="hidden lg:flex items-center gap-12">
-                {["Registry", "Network", "Specs", "Vault"].map((link) => (
-                  <Link key={link} href="#" className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#555555] hover:text-white transition-colors underline-offset-8 hover:underline decor-2">
-                    {link}
-                  </Link>
-                ))}
-            </nav>
+        <nav className="hidden md:flex items-center gap-16">
+          <Link href="/#book" className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#444444] hover:text-white transition-colors">
+            EXECUTE_BOOKING
+          </Link>
+          <Link href="/dashboard" className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#444444] hover:text-white transition-colors">
+            NODE_ADMIN
+          </Link>
+          <div className="h-6 w-[1px] bg-[#111111]"></div>
+          <div className="text-[10px] font-black tracking-widest text-white border border-white/10 px-4 py-2 hover:bg-white hover:text-black transition-all cursor-default uppercase">
+            EST_2026
+          </div>
+        </nav>
 
-            <div className="flex items-center gap-6">
-                <Link href="/admin">
-                    <Button variant="link" size="sm" className="hidden sm:flex items-center gap-2 text-[#444444] hover:text-white transition-colors text-xs font-bold uppercase tracking-widest no-underline">
-                        Terminal
-                    </Button>
-                </Link>
-                <div className="h-4 w-[1px] bg-[#222222] hidden sm:block"></div>
-                <Button size="sm" className="bg-white text-black hover:bg-[#CCCCCC] font-bold px-8 rounded-none transition-all active:scale-95 text-xs uppercase tracking-widest">
-                   Initialize
-                </Button>
-            </div>
-        </div>
-    </header>
+        <button className="md:hidden text-white uppercase text-[10px] font-bold tracking-[0.3em]">
+          Menu_
+        </button>
+      </div>
+    </motion.header>
   )
 }
