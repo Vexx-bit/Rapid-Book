@@ -41,70 +41,71 @@ export function DateTimeSelection({ serviceDuration, onSelect, onBack }: DateTim
   }, [date, serviceDuration])
 
   return (
-    <div className="space-y-16">
-      <div className="grid md:grid-cols-2 gap-16">
+    <div className="space-y-40">
+      <div className="grid md:grid-cols-2 gap-32">
         {/* Minimalist Calendar Section */}
-        <div className="space-y-6">
-          <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-[#444444]">
-            [02.1] Select Configuration Date
+        <div className="space-y-12">
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.5em] text-[#333333] border-b border-[#111111] pb-6">
+            DATE_SELECTION_PROTOCOL
           </h3>
           
-          <div className="border border-[#1A1A1A] p-4 bg-transparent">
+          <div className="bg-transparent group transition-all">
             <Calendar
               mode="single"
               selected={date}
               onSelect={setDate}
               disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))}
-              className="rounded-none text-white mx-auto shadow-none bg-transparent"
+              className="rounded-none text-white mx-auto shadow-none bg-transparent scale-110 active:scale-100 transition-transform"
             />
           </div>
         </div>
         
         {/* Minimalist Time Slots Section */}
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-             <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-[#444444]">
-               [02.2] Available Entry Nodes
+        <div className="space-y-12">
+          <div className="flex justify-between items-end border-b border-[#111111] pb-6">
+             <h3 className="text-[10px] font-bold uppercase tracking-[0.5em] text-[#333333]">
+               AVAILABILITY_NODE
              </h3>
              {date && (
-               <span className="text-[10px] font-bold text-white uppercase tracking-widest leading-none">
-                 {format(date, 'MMM d, yyyy')}
+               <span className="text-xl font-light text-white tracking-tighter">
+                 {format(date, 'MMMM d, yyyy')}
                </span>
              )}
           </div>
           
-          <div className="border border-[#1A1A1A] p-8 min-h-[350px] flex flex-col">
+          <div className="min-h-[400px] flex flex-col relative">
             {loading ? (
               <div className="flex-1 flex items-center justify-center">
-                 <Loader2 className="h-8 w-8 animate-spin text-white stroke-[1px]" />
+                 <Loader2 className="h-12 w-12 animate-spin text-white stroke-[0.5px]" />
               </div>
             ) : slots.length > 0 ? (
-              <ScrollArea className="flex-1">
+              <ScrollArea className="flex-1 pr-6">
                 <div className="grid grid-cols-1 gap-2">
                   {slots.map((slot, index) => (
                     <motion.div
                       key={slot}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: index * 0.02 }}
+                      transition={{ delay: index * 0.015 }}
                     >
                       <button
-                        className={`w-full py-4 text-xs font-bold tracking-widest uppercase transition-all border border-transparent hover:border-[#333333] ${
+                        className={`w-full py-8 text-2xl font-light tracking-tighter transition-all duration-500 border-b border-[#111111] flex items-center justify-between hover:pl-6 ${
                           selectedSlot === slot 
-                            ? 'bg-white text-black' 
-                            : 'text-[#666666] hover:text-white'
+                            ? 'text-white pl-6' 
+                            : 'text-[#222222] hover:text-[#555555]'
                         }`}
                         onClick={() => setSelectedSlot(slot)}
                       >
                         {format(new Date(slot), 'HH:mm')}
+                        {selectedSlot === slot && <div className="h-1 w-12 bg-white shadow-[0_0_15px_rgba(255,255,255,0.7)]"></div>}
                       </button>
                     </motion.div>
                   ))}
                 </div>
               </ScrollArea>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-center opacity-30 uppercase tracking-[0.2em] text-xs font-bold">
-                No availability detected.
+              <div className="flex-1 flex items-center justify-center text-center opacity-20 uppercase tracking-[0.4em] text-[10px] font-black">
+                Registry search returned no nodes.
               </div>
             )}
           </div>
@@ -112,23 +113,23 @@ export function DateTimeSelection({ serviceDuration, onSelect, onBack }: DateTim
       </div>
       
       {/* Precision Navigation */}
-      <div className="flex justify-between pt-12 border-t border-[#111111]">
+      <div className="flex justify-between pt-20">
         <Button 
           variant="ghost" 
           onClick={onBack}
-          className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#444444] hover:text-white"
+          className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#333333] hover:text-white transition-all hover:bg-transparent"
         >
-          <ArrowLeft className="mr-3 h-4 w-4" />
-          Abort sequence
+          <ArrowLeft className="mr-6 h-6 w-6 stroke-[1px]" />
+          ABORT SEQUENCE
         </Button>
         
         <Button 
           disabled={!selectedSlot || !date} 
           onClick={() => date && selectedSlot && onSelect(date, selectedSlot)}
-          className="bg-white text-black hover:bg-[#CCCCCC] rounded-none px-12 py-6 text-xs font-bold uppercase tracking-widest active:scale-95 transition-all"
+          className="bg-white text-black hover:bg-[#CCCCCC] rounded-none px-20 py-10 text-[10px] font-black uppercase tracking-[0.4em] active:scale-95 transition-all shadow-none"
         >
-          Confirm temporal node
-          <ArrowRight className="ml-3 h-4 w-4" />
+          EXECUTE
+          <ArrowRight className="ml-6 h-6 w-6 stroke-[1px]" />
         </Button>
       </div>
     </div>
