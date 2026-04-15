@@ -1,7 +1,7 @@
 'use client'
 
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hook-form/resolvers/zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -11,8 +11,8 @@ import { format } from 'date-fns'
 import { ArrowLeft, Send } from 'lucide-react'
 
 const formSchema = z.object({
-  name: z.string().min(2, 'Identification required'),
-  email: z.string().email('Valid communication address required'),
+  name: z.string().min(2, 'Name identification required'),
+  email: z.string().email('Valid communication endpoint required'),
 })
 
 interface CustomerFormProps {
@@ -32,47 +32,47 @@ export function CustomerForm({ service, slot, onSubmit, onBack }: CustomerFormPr
   })
 
   return (
-    <div className="space-y-16">
-      <div className="grid lg:grid-cols-2 gap-16">
-        <div className="space-y-8">
-           <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-[#444444]">
-             [03.1] Registry Verification
+    <div className="space-y-40">
+      <div className="grid lg:grid-cols-2 gap-32">
+        <div className="space-y-12">
+           <h3 className="text-[10px] font-bold uppercase tracking-[0.5em] text-[#333333] border-b border-[#111111] pb-6">
+             NODE_CONFIGURATION_SUMMARY
            </h3>
            
-           <div className="border border-[#1A1A1A] p-10 space-y-8">
-              <div className="space-y-2">
-                 <span className="text-[10px] font-bold text-[#444444] uppercase tracking-widest">Selected Service</span>
-                 <p className="text-2xl font-light text-white tracking-tight">{service.name}</p>
+           <div className="border border-[#111111] p-16 space-y-12 bg-transparent transition-all hover:border-[#222222]">
+              <div className="space-y-4">
+                 <span className="text-[10px] font-bold text-[#333333] uppercase tracking-[0.4em]">Service Mapping</span>
+                 <p className="text-5xl font-light text-white tracking-tighter">{service.name}</p>
               </div>
-              <div className="h-[1px] bg-[#111111]"></div>
-              <div className="space-y-2">
-                 <span className="text-[10px] font-bold text-[#444444] uppercase tracking-widest">Assigned Slot</span>
-                 <p className="text-xl font-light text-white tracking-tight">{format(new Date(slot), 'MMMM d, yyyy @ HH:mm')}</p>
+              <div className="h-[2px] w-20 bg-[#111111]"></div>
+              <div className="space-y-4">
+                 <span className="text-[10px] font-bold text-[#333333] uppercase tracking-[0.4em]">Time Vector</span>
+                 <p className="text-3xl font-light text-white tracking-tighter leading-none italic">{format(new Date(slot), 'MMMM d, yyyy @ HH:mm')}</p>
               </div>
            </div>
         </div>
 
-        <div className="space-y-8">
-          <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-[#444444]">
-            [03.2] Customer Credentials
+        <div className="space-y-12">
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.5em] text-[#333333] border-b border-[#111111] pb-6">
+            CUSTOMER_REGISTRY_ENTRY
           </h3>
           
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-16">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
-                  <FormItem className="space-y-4">
-                    <FormLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#666666]">Universal ID Name</FormLabel>
+                  <FormItem className="space-y-6">
+                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.4em] text-[#333333]">Identification Source Name</FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="AUTHENTIC_NAME" 
+                        placeholder="..." 
                         {...field} 
-                        className="bg-transparent border-none border-b border-[#1A1A1A] rounded-none px-0 text-lg placeholder:text-[#222222] focus:border-white transition-all focus:ring-0 shadow-none h-12"
+                        className="bg-transparent border-none border-b border-[#111111] rounded-none px-0 text-2xl font-light text-white placeholder:text-[#111111] focus:border-white transition-all focus:ring-0 shadow-none h-16"
                       />
                     </FormControl>
-                    <FormMessage className="text-[10px] uppercase font-bold text-red-900" />
+                    <FormMessage className="text-[10px] uppercase font-bold text-white bg-red-900 inline-block px-4 py-1" />
                   </FormItem>
                 )}
               />
@@ -81,37 +81,37 @@ export function CustomerForm({ service, slot, onSubmit, onBack }: CustomerFormPr
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem className="space-y-4">
-                    <FormLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#666666]">Node Comm Address</FormLabel>
+                  <FormItem className="space-y-6">
+                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.4em] text-[#333333]">Node Communication Address</FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="IDENTITY@PROTOCOL.SYS" 
+                        placeholder="..." 
                         {...field} 
-                        className="bg-transparent border-none border-b border-[#1A1A1A] rounded-none px-0 text-lg placeholder:text-[#222222] focus:border-white transition-all focus:ring-0 shadow-none h-12"
+                        className="bg-transparent border-none border-b border-[#111111] rounded-none px-0 text-2xl font-light text-white placeholder:text-[#111111] focus:border-white transition-all focus:ring-0 shadow-none h-16"
                       />
                     </FormControl>
-                    <FormMessage className="text-[10px] uppercase font-bold text-red-900" />
+                    <FormMessage className="text-[10px] uppercase font-bold text-white bg-red-900 inline-block px-4 py-1" />
                   </FormItem>
                 )}
               />
 
-              <div className="pt-12 flex justify-between gap-4">
+              <div className="pt-20 flex justify-between items-center border-t border-[#111111]">
                  <Button 
                    type="button"
                    variant="ghost" 
                    onClick={onBack}
-                   className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#444444] hover:text-white"
+                   className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#333333] hover:text-white transition-all hover:bg-transparent"
                  >
-                   <ArrowLeft className="mr-3 h-4 w-4" />
-                   Modify parameters
+                   <ArrowLeft className="mr-6 h-6 w-6 stroke-[1px]" />
+                   ADJUST VECTORS
                  </Button>
                  
                  <Button 
                    type="submit" 
-                   className="bg-white text-black hover:bg-[#CCCCCC] rounded-none px-12 py-6 text-xs font-bold uppercase tracking-widest active:scale-95 transition-all shadow-none"
+                   className="bg-white text-black hover:bg-[#CCCCCC] rounded-none px-20 py-10 text-[10px] font-black uppercase tracking-[0.4em] active:scale-95 transition-all shadow-none"
                  >
-                   Finalize Registry
-                   <Send className="ml-3 h-4 w-4" />
+                   FINALIZE_TRANSMISSION
+                   <Send className="ml-6 h-6 w-6 stroke-[1px]" />
                  </Button>
               </div>
             </form>
