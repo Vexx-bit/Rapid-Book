@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Service } from '@prisma/client'
 import { ServiceSelection } from './ServiceSelection'
 import { DateTimeSelection } from './DateTimeSelection'
@@ -9,7 +9,7 @@ import { CustomerForm } from './CustomerForm'
 import { toast } from 'sonner'
 import { createBooking } from "@/actions/create-booking"
 import { motion, AnimatePresence } from 'framer-motion'
-import { CheckCircle2, ArrowRight, ArrowLeft } from 'lucide-react'
+import { CheckCircle2, ArrowRight, Minus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface BookingWizardProps {
@@ -46,11 +46,11 @@ export function BookingWizard({ services }: BookingWizardProps) {
         })
 
         if (result.success) {
-            toast.success("Booking Confirmed!")
+            toast.success("BOOKING_INITIALIZED")
             setIsSuccess(true)
         }
     } catch (error) {
-        toast.error("Booking failed. Please try again.")
+        toast.error("SYSTEM_FAILURE_RETRY")
         console.error(error)
     }
   }
@@ -66,130 +66,75 @@ export function BookingWizard({ services }: BookingWizardProps) {
   if (isSuccess) {
       return (
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ type: "spring", duration: 0.6 }}
-            className="max-w-lg mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="p-12 text-center"
           >
-              <Card className="text-center p-8 border-2 border-primary/20 shadow-2xl bg-gradient-to-br from-card to-primary/5">
-                  <div className="flex justify-center mb-6">
-                      <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                          className="relative"
-                      >
-                          <div className="absolute inset-0 bg-green-500/20 blur-2xl rounded-full"></div>
-                          <CheckCircle2 className="h-20 w-20 text-green-500 relative z-10" />
-                      </motion.div>
-                  </div>
+              <div className="flex justify-center mb-10">
+                  <CheckCircle2 className="h-16 w-16 text-white stroke-[1px]" />
+              </div>
+              
+              <div className="space-y-6">
+                  <h2 className="text-4xl font-light tracking-tighter text-white uppercase">
+                      Confirmed.
+                  </h2>
+                  <p className="text-[#666666] text-sm tracking-widest uppercase font-bold">
+                    Transmission Sent // Node ID: {Math.random().toString(36).substring(7)}
+                  </p>
                   
-                  <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                  >
-                      <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                          Booking Confirmed!
-                      </h2>
-                      <p className="text-muted-foreground mb-8 text-lg">
-                          We've sent a confirmation email with all the details.
-                      </p>
-                      
+                  <div className="pt-12">
                       <Button 
                           onClick={resetBooking} 
-                          size="lg"
-                          className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all"
+                          className="bg-white text-black hover:bg-[#CCCCCC] rounded-none px-12 py-6 text-xs font-bold uppercase tracking-widest"
                       >
-                          Book Another Service
-                          <ArrowRight className="ml-2 h-4 w-4" />
+                          New Initialization
                       </Button>
-                  </motion.div>
-              </Card>
+                  </div>
+              </div>
           </motion.div>
       )
   }
 
-  const steps = [
-    { number: 1, label: 'Service', icon: '🎯' },
-    { number: 2, label: 'Date & Time', icon: '📅' },
-    { number: 3, label: 'Details', icon: '✨' }
-  ]
-
   return (
-    <div className="max-w-5xl mx-auto p-4">
-      {/* Enhanced Step Indicator */}
-      <div className="mb-12 relative">
-        <div className="flex justify-between items-center relative z-10">
-          {steps.map((s, index) => {
-            const isActive = step >= s.number
-            const isCurrent = step === s.number
-            const isCompleted = step > s.number
-            
-            return (
-              <div key={s.number} className="flex flex-col items-center flex-1 relative">
-                <motion.div 
-                  className={`
-                    relative w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold z-10 transition-all duration-300
-                    ${isCurrent 
-                      ? 'bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-xl shadow-primary/50 scale-110' 
-                      : isCompleted
-                      ? 'bg-primary text-primary-foreground shadow-lg'
-                      : 'bg-muted text-muted-foreground border-2 border-border'}
-                  `}
-                  animate={isCurrent ? { scale: [1, 1.05, 1] } : {}}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  {isCompleted ? <CheckCircle2 className="h-6 w-6" /> : s.icon}
-                </motion.div>
-                
-                <span className={`text-sm mt-3 font-semibold transition-colors duration-300 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
-                  {s.label}
-                </span>
-                
-                {index < steps.length - 1 && (
-                  <div className="absolute top-8 left-[50%] w-full h-1 -z-0">
-                    <div className="h-full bg-muted rounded-full overflow-hidden">
-                      <motion.div 
-                        className="h-full bg-gradient-to-r from-primary to-primary/80"
-                        initial={{ width: '0%' }}
-                        animate={{ width: step > s.number ? '100%' : '0%' }}
-                        transition={{ duration: 0.5 }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
+    <div className="w-full">
+      {/* Precision Step Indicator */}
+      <div className="mb-20 px-4">
+        <div className="flex justify-between items-center max-w-sm mx-auto">
+          {[1, 2, 3].map((s) => (
+            <div key={s} className="flex items-center gap-4">
+               <div className={`
+                 text-[10px] font-bold tracking-widest transition-all duration-500
+                 ${step === s ? 'text-white scale-125' : 'text-[#333333]'}
+               `}>
+                 0{s}
+               </div>
+               {s < 3 && <Minus className="w-8 h-[1px] bg-[#1A1A1A]" />}
+            </div>
+          ))}
         </div>
       </div>
 
       <AnimatePresence mode="wait">
         <motion.div
             key={step}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         >
-            <Card className="shadow-2xl border-2 border-border/50 backdrop-blur-sm bg-card/95 overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary/50 to-primary"></div>
+            <div className="space-y-12">
+                <div className="space-y-2 border-l-2 border-white pl-8">
+                    <h3 className="text-3xl font-light tracking-tighter uppercase text-white">
+                        {step === 1 && "Configuration Selection"}
+                        {step === 2 && "Temporal Window"}
+                        {step === 3 && "Registry Entry"}
+                    </h3>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#555555]">
+                       Phase {step} // Initializing {step === 1 ? 'Services' : step === 2 ? 'Schedule' : 'Authentication'}
+                    </p>
+                </div>
                 
-                <CardHeader className="space-y-3 pb-8">
-                    <CardTitle className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                        {step === 1 && "Choose Your Service"}
-                        {step === 2 && "Pick Your Time"}
-                        {step === 3 && "Almost There!"}
-                    </CardTitle>
-                    <CardDescription className="text-base">
-                        {step === 1 && "Select from our premium services tailored to your needs"}
-                        {step === 2 && "Find the perfect time slot that fits your schedule"}
-                        {step === 3 && "Just a few details to confirm your booking"}
-                    </CardDescription>
-                </CardHeader>
-                
-                <CardContent className="pb-8">
+                <div className="min-h-[400px]">
                     {step === 1 && (
                         <ServiceSelection services={services} onSelect={handleServiceSelect} />
                     )}
@@ -208,8 +153,8 @@ export function BookingWizard({ services }: BookingWizardProps) {
                             onBack={() => setStep(2)}
                         />
                     )}
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         </motion.div>
       </AnimatePresence>
     </div>
