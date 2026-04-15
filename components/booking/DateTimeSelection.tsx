@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { getAvailableSlots } from '@/actions/check-availability'
 import { format } from 'date-fns'
-import { Loader2, ArrowLeft, ArrowRight, Calendar as CalendarIcon, Clock } from 'lucide-react'
+import { Loader2, ArrowLeft, ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 interface DateTimeSelectionProps {
@@ -41,108 +41,94 @@ export function DateTimeSelection({ serviceDuration, onSelect, onBack }: DateTim
   }, [date, serviceDuration])
 
   return (
-    <div className="space-y-6">
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Calendar Section */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-lg font-semibold">
-            <CalendarIcon className="h-5 w-5 text-primary" />
-            <h3>Select Date</h3>
-          </div>
+    <div className="space-y-16">
+      <div className="grid md:grid-cols-2 gap-16">
+        {/* Minimalist Calendar Section */}
+        <div className="space-y-6">
+          <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-[#444444]">
+            [02.1] Select Configuration Date
+          </h3>
           
-          <div className="border-2 border-border rounded-xl p-6 bg-gradient-to-br from-card to-muted/20 shadow-lg">
+          <div className="border border-[#1A1A1A] p-4 bg-transparent">
             <Calendar
               mode="single"
               selected={date}
               onSelect={setDate}
               disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))}
-              className="rounded-lg"
+              className="rounded-none text-white mx-auto shadow-none bg-transparent"
             />
           </div>
         </div>
         
-        {/* Time Slots Section */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-lg font-semibold">
-            <Clock className="h-5 w-5 text-primary" />
-            <h3>Available Slots</h3>
-            {date && (
-              <span className="text-sm font-normal text-muted-foreground ml-auto">
-                {format(date, 'MMM d, yyyy')}
-              </span>
-            )}
+        {/* Minimalist Time Slots Section */}
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+             <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-[#444444]">
+               [02.2] Available Entry Nodes
+             </h3>
+             {date && (
+               <span className="text-[10px] font-bold text-white uppercase tracking-widest leading-none">
+                 {format(date, 'MMM d, yyyy')}
+               </span>
+             )}
           </div>
           
-          <div className="border-2 border-border rounded-xl p-6 bg-gradient-to-br from-card to-muted/20 shadow-lg min-h-[380px] flex flex-col">
+          <div className="border border-[#1A1A1A] p-8 min-h-[350px] flex flex-col">
             {loading ? (
               <div className="flex-1 flex items-center justify-center">
-                <div className="text-center space-y-3">
-                  <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto" />
-                  <p className="text-sm text-muted-foreground">Finding available slots...</p>
-                </div>
+                 <Loader2 className="h-8 w-8 animate-spin text-white stroke-[1px]" />
               </div>
             ) : slots.length > 0 ? (
-              <ScrollArea className="flex-1 -mx-2 px-2">
-                <div className="grid grid-cols-2 gap-3 pb-2">
+              <ScrollArea className="flex-1">
+                <div className="grid grid-cols-1 gap-2">
                   {slots.map((slot, index) => (
                     <motion.div
                       key={slot}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.03 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: index * 0.02 }}
                     >
-                      <Button
-                        variant={selectedSlot === slot ? "default" : "outline"}
-                        className={`w-full h-12 font-semibold transition-all ${
+                      <button
+                        className={`w-full py-4 text-xs font-bold tracking-widest uppercase transition-all border border-transparent hover:border-[#333333] ${
                           selectedSlot === slot 
-                            ? 'bg-gradient-to-r from-primary to-primary/80 shadow-lg shadow-primary/30' 
-                            : 'hover:border-primary/50 hover:bg-primary/5'
+                            ? 'bg-white text-black' 
+                            : 'text-[#666666] hover:text-white'
                         }`}
                         onClick={() => setSelectedSlot(slot)}
                       >
-                        {format(new Date(slot), 'h:mm a')}
-                      </Button>
+                        {format(new Date(slot), 'HH:mm')}
+                      </button>
                     </motion.div>
                   ))}
                 </div>
               </ScrollArea>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-center">
-                <div className="space-y-2">
-                  <div className="text-4xl">📅</div>
-                  <p className="text-muted-foreground font-medium">
-                    No slots available for this date
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Please select another date
-                  </p>
-                </div>
+              <div className="flex-1 flex items-center justify-center text-center opacity-30 uppercase tracking-[0.2em] text-xs font-bold">
+                No availability detected.
               </div>
             )}
           </div>
         </div>
       </div>
       
-      {/* Navigation Buttons */}
-      <div className="flex justify-between pt-4 border-t">
+      {/* Precision Navigation */}
+      <div className="flex justify-between pt-12 border-t border-[#111111]">
         <Button 
-          variant="outline" 
+          variant="ghost" 
           onClick={onBack}
-          size="lg"
-          className="gap-2"
+          className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#444444] hover:text-white"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Back
+          <ArrowLeft className="mr-3 h-4 w-4" />
+          Abort sequence
         </Button>
         
         <Button 
           disabled={!selectedSlot || !date} 
           onClick={() => date && selectedSlot && onSelect(date, selectedSlot)}
-          size="lg"
-          className="gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg disabled:opacity-50"
+          className="bg-white text-black hover:bg-[#CCCCCC] rounded-none px-12 py-6 text-xs font-bold uppercase tracking-widest active:scale-95 transition-all"
         >
-          Continue
-          <ArrowRight className="h-4 w-4" />
+          Confirm temporal node
+          <ArrowRight className="ml-3 h-4 w-4" />
         </Button>
       </div>
     </div>
